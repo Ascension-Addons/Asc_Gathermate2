@@ -4,7 +4,7 @@
 	This mods whole purpose is to be lean, simple and feature complete.
 ]]
 -- Mixin AceEvent
-local GatherMate = LibStub("AceAddon-3.0"):NewAddon("GatherMate2","AceConsole-3.0","AceEvent-3.0")
+local GatherMate = LibStub("AceAddon-3.0"):NewAddon("GatherMate2","AceConsole-3.0","AceEvent-3.0","NewsFrame-1.0","LibSink-2.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("GatherMate2",false)
 _G["GatherMate2"] = GatherMate
 
@@ -99,6 +99,7 @@ function GatherMate:OnInitialize()
 	self:RegisterDBType("Woodcutting", GatherMate2TreeDB)
 	db = self.db.profile
 	filter = db.filter
+	self:PatchNotes()
 end
 
 --[[
@@ -170,7 +171,9 @@ function GatherMate:AddNode(zone, x, y, level, nodeType, name)
 		return
 	end
 	db[zone] = db[zone] or {}
-	db[zone][id] = self.nodeIDs[nodeType][name]
+	local nodeid = self.nodeIDs[nodeType][name]
+	db[zone][id] = nodeid
+	GatherMate:SendNode(zone, id, nodeType, nodeid)
 	self:SendMessage("GatherMate2NodeAdded", zone, nodeType, id, name)
 end
 
@@ -183,6 +186,7 @@ function GatherMate:AddNodeByID(zone, x, y, level, nodeType, nodeid)
 	end
 	db[zone] = db[zone] or {}
 	db[zone][id] = nodeid
+	GatherMate:SendNode(zone, id, nodeType, nodeid)
 	self:SendMessage("GatherMate2NodeAdded", zone, nodeType, id, nodeid)
 end
 
@@ -197,6 +201,10 @@ function GatherMate:InjectNode(zone, coords, nodeType, nodeID)
 		return
 	end
 	db[zone] = db[zone] or {}
+	while db[zone][coords] do
+		if db[zone][coords] == nodeID then break end
+		coords = coords + 1000100
+	end
 	db[zone][coords] = nodeID
 end
 function GatherMate:DeleteNode(zone, coords, nodeType)

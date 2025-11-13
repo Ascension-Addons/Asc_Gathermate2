@@ -232,6 +232,7 @@ function Collector:addItem(skill,what)
 	-- so we ignore the new Death Knight starting zone for now.
 	-- if GetMapInfo() == "ScarletEnclave" then return end TODO Validate in wrath, shoud be fine
 	--self:GatherCompleted()
+	if WorldMapFrame:IsShown() then return else SetMapToCurrentZone() end
 	local zone = GetCurrentMapAreaID()
 	local level = GetCurrentMapDungeonLevel()
 	local node_type = spells[skill]
@@ -574,6 +575,7 @@ local treasure = {
 	[967039] = 536, -- Hidden Cache
 	[967040] = 537, -- Rare Hidden Cache
 	[967041] = 538, -- Epic Hidden Cache
+	[395804] = 541, -- Lava Bloom
 	--Blasted Lands
 --	[000000] = 536, -- Hidden Cache
 --	[000000] = 537, -- Rare Hidden Cache
@@ -582,10 +584,12 @@ local treasure = {
 	[967033] = 536, -- Hidden Cache
 	[967034] = 537, -- Rare Hidden Cache
 	[967035] = 538, -- Epic Hidden Cache
+	[395798] = 540, -- Carnivorous Clam
 	-- Eastern Plaguelands
 	[967042] = 536, -- Hidden Cache
 	[967043] = 537, -- Rare Hidden Cache
 	[967044] = 538, -- Epic Hidden Cache
+	[395743] = 542, -- Ravenous Scourgethorn
 	--Western Plaguelands
 	[967045] = 536, -- Hidden Cache
 	[967046] = 537, -- Rare Hidden Cache
@@ -634,6 +638,7 @@ function Collector:GameObject(event, objid)
 	-- so we ignore the new Death Knight starting zone for now.
 	-- if GetMapInfo() == "ScarletEnclave" then return end TODO Validate in wrath, shoud be fine
 	--self:GatherCompleted()
+	if WorldMapFrame:IsShown() then return else SetMapToCurrentZone() end
 	local zone = GetCurrentMapAreaID()
 	local level = GetCurrentMapDungeonLevel()
 	local node_type, node_id

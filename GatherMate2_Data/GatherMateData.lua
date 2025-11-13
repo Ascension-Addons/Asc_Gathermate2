@@ -61,9 +61,13 @@ end
 
 -- Insert data
 function GatherMateData:MergeNodes(clear, zoneFilter, ntype, sourcevar)
+	if GatherMate.db.profile.dbLocks[ntype] then
+		GatherMate:Print(string.format("%s is locked and cannot be updated at this time", ntype))
+		return
+	end
 	if clear then GatherMate:ClearDB(ntype) end
 	for zoneID, node_table in pairs(sourcevar) do
-		if zoneFilter and zoneFilter[zoneID] or not zoneFilter then
+		if not zoneFilter or (zoneFilter and zoneFilter[zoneID]) then
 			for nodeID, nodes in pairs(node_table) do
 				for _, coord in ipairs(nodes) do
 					GatherMate:InjectNode(zoneID, coord, ntype, nodeID)
